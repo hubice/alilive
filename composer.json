@@ -1,0 +1,19 @@
+{
+    "name": "hubice/alilive",
+    "type": "l",
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "naice",
+            "email": "1820120473@qq.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4": {"AliLive\\": "src/AliLive/"}
+    }
+}
