@@ -8,7 +8,7 @@
 
 namespace AliLive;
 
-class Task extends Base
+class Api extends Base
 {
     //开启关闭推流 0 表示禁用，1 表示允许推流，2 表示断流
     public function liveChannelSetStatus($channel_id, $status)
@@ -93,5 +93,31 @@ class Task extends Base
             ]
         ];
         return Http::post($this->apiUrl."?".http_build_query($param), $body);
+    }
+
+    //获取推流地址
+    public function getPushUrl($channel_id, $time = null)
+    {
+        $time = ($time == null) ? strtotime(date("Y-m-d 23:0:0")) + 3600 * 24 : $time;
+        $txTime = strtoupper(base_convert($time, 10, 16));
+        $live_code = $this->prefix . '_' . $channel_id;
+        $txSecret = md5($this->push_key . $live_code . $txTime);
+        $ext_str = "?" . http_build_query(["txSecret" => $txSecret, "txTime" => $txTime]);
+        return "rtmp://" . $this->push_url . "/live/" . $live_code . (isset($ext_str) ? $ext_str : "");
+    }
+
+    //获取播放地址
+    public function getPlayUrl($channel_id, $time = null)
+    {
+        $time = ($time == null) ? strtotime(date("Y-m-d 23:0:0")) + 3600 * 24 : $time;
+        $txTime = strtoupper(base_convert($time, 10, 16));
+        $live_code = $this->prefix . '_' . $channel_id;
+        $txSecret = md5($this->play_key . $live_code . $txTime);
+        $ext_str = "?" . http_build_query(["txSecret" => $txSecret, "txTime" => $txTime]);
+        return array(
+            "rtmp" => "rtmp://" . $this->play_url . "/live/" . $live_code . (isset($ext_str) ? $ext_str : ""),
+            "flv" => "http://" . $this->play_url . "/live/" . $live_code . ".flv" . (isset($ext_str) ? $ext_str : ""),
+            "m3u8" => "http://" . $this->play_url . "/live/" . $live_code . ".m3u8" . (isset($ext_str) ? $ext_str : "")
+        );
     }
 }
