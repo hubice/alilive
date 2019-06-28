@@ -35,7 +35,7 @@ class Base
     public function __construct(array $config)
     {
         if (empty($config['api_key']) || empty($config['push_key']) || empty($config['push_url']) ||
-        empty($config['play_key']) || empty($config['play_url']) || empty($config['app_id'])) {
+            !isset($config['play_key']) || empty($config['play_url']) || empty($config['app_id'])) {
             throw new AliLiveException("参数错误");
         }
         $this->apiKey = $config['api_key'];

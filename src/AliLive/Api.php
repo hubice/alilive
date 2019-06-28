@@ -114,10 +114,18 @@ class Api extends Base
         $live_code = $this->prefix . '_' . $channel_id;
         $txSecret = md5($this->play_key . $live_code . $txTime);
         $ext_str = "?" . http_build_query(["txSecret" => $txSecret, "txTime" => $txTime]);
-        return array(
-            "rtmp" => "rtmp://" . $this->play_url . "/live/" . $live_code . (isset($ext_str) ? $ext_str : ""),
-            "flv" => "http://" . $this->play_url . "/live/" . $live_code . ".flv" . (isset($ext_str) ? $ext_str : ""),
-            "m3u8" => "http://" . $this->play_url . "/live/" . $live_code . ".m3u8" . (isset($ext_str) ? $ext_str : "")
-        );
+        if (empty($this->play_key)) {
+            return array(
+                "rtmp" => "rtmp://" . $this->play_url . "/live/" . $live_code,
+                "flv" => "http://" . $this->play_url . "/live/" . $live_code . ".flv",
+                "m3u8" => "http://" . $this->play_url . "/live/" . $live_code . ".m3u8"
+            );
+        } else {
+            return array(
+                "rtmp" => "rtmp://" . $this->play_url . "/live/" . $live_code . (isset($ext_str) ? $ext_str : ""),
+                "flv" => "http://" . $this->play_url . "/live/" . $live_code . ".flv" . (isset($ext_str) ? $ext_str : ""),
+                "m3u8" => "http://" . $this->play_url . "/live/" . $live_code . ".m3u8" . (isset($ext_str) ? $ext_str : "")
+            );
+        }
     }
 }
