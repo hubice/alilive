@@ -23,8 +23,11 @@ class Base
     //播放防止盗链
     protected $play_key = "987654321";
 
-    //时间
-    protected $time;
+    //低延时流
+    protected $acc_key = "c4fdc564d66db12f5fce594b34bf2d83";
+    //低延时zid
+    protected $bizid = "42784";
+
     //鉴权key
     protected $apiKey = "c4fdc564d66db12f5fce594b34bf2d83";
     //账号Appid
@@ -35,7 +38,8 @@ class Base
     public function __construct(array $config)
     {
         if (empty($config['api_key']) || empty($config['push_key']) || empty($config['push_url']) ||
-            !isset($config['play_key']) || empty($config['play_url']) || empty($config['app_id'])) {
+            !isset($config['play_key']) || empty($config['play_url']) || empty($config['app_id']) ||
+            empty($config['acc_key']) || empty($config['bizid'])) {
             throw new AliLiveException("参数错误");
         }
         $this->apiKey = $config['api_key'];
@@ -43,11 +47,12 @@ class Base
         $this->push_url = $config['push_url'];
         $this->play_key = $config['play_key'];
         $this->play_url = $config['play_url'];
+        $this->acc_key = $config['acc_key'];
+        $this->bizid = $config['bizid'];
         $this->appId = $config['app_id'];
-        $this->time = time();
     }
 
-    protected function getSign() {
-        return md5($this->apiKey.$this->time);
+    protected function getSign($time) {
+        return md5($this->apiKey.$time);
     }
 }
